@@ -24,9 +24,10 @@
   main
   */
 })({
+  // 第二版， 使用 id  和 每个graph内的mapping完成映射，避免重名问题
   1: [
     function (require, module, exports) {
-      const { foo } = require("./foo.js");
+      const { foo } = require("./example/foo.js");
       foo();
       console.log("main");
     },
