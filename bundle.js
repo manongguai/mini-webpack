@@ -18,10 +18,17 @@
 
       var _foo = require("./foo.js");
       var _bar = require("./utils/bar.js");
+      var _user = require("./user.json");
+      var _user2 = _interopRequireDefault(_user);
+      function _interopRequireDefault(e) {
+        return e && e.__esModule ? e : { default: e };
+      }
+      // 导入打印json文件， 需要loader处理
+      console.log(_user2.default);
       (0, _foo.foo)(); // logs: 'foo'
       console.log("main");
     },
-    { "./foo.js": 2, "./utils/bar.js": 3 },
+    { "./foo.js": 2, "./utils/bar.js": 3, "./user.json": 4 },
   ],
   2: [
     function (require, module, exports) {
@@ -50,6 +57,17 @@
       function bar() {
         console.log("bar");
       }
+    },
+    {},
+  ],
+  4: [
+    function (require, module, exports) {
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true,
+      });
+      exports.default = '{\n  "name": "张三",\n  "age": 18\n}\n';
     },
     {},
   ],

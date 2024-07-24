@@ -5,13 +5,44 @@ import parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import ejs from "ejs";
 import babel from "@babel/core";
+import { jsonLoader } from "./loader/json-loader.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 var id = 1;
+
+const webpackConfig = {
+  module: {
+    rules: [
+      {
+        test: /\.json$/,
+        use: {
+          // loader: path.resolve(__dirname, "loader/json-loader.js"),  // 文件格式
+          loader: jsonLoader, // 函数形式
+        },
+      },
+    ],
+  },
+};
+
 function createAssets(filePath) {
   // 1.获取文件内容
-  const source = fs.readFileSync(path.join(__dirname, filePath), "utf8");
+  let source = fs.readFileSync(path.join(__dirname, filePath), "utf8");
+  // 加载loader
+  const loaders = webpackConfig.module.rules;
+  // 使用loader
+  loaders.forEach((rule) => {
+    const { test, use } = rule;
+    if (test.test(filePath)) {
+      if (Array.isArray(use.loader)) {
+        use.loader.reverse.forEach((fn) => {
+          source = fn(source);
+        });
+      } else {
+        source = use.loader(source);
+      }
+    }
+  });
 
   // 2.获取依赖关系
   // 抽象语法树
