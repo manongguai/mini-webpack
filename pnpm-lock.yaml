@@ -22,6 +22,9 @@ devDependencies:
   ejs:
     specifier: ^3.1.10
     version: 3.1.10
+  tapable:
+    specifier: ^2.2.1
+    version: 2.2.1
 
 packages:
 
@@ -1057,6 +1060,11 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
+    dev: true
+
+  /tapable@2.2.1:
+    resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
+    engines: {node: '>=6'}
     dev: true
 
   /to-fast-properties@1.0.3:
