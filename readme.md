@@ -30,3 +30,10 @@
 2. modules 函数为graph遍历所得，使用 assetId 作为键值， 对应一个函数和一个mapping关系
 
 3. 模拟创建require方法， 初次执行查找main函数， 并通过mapping关系加载其他依赖
+
+
+## loader
+1. 在createAssets时，针对非js文件做一定的修改，使其变成 js文件
+
+## plugin
+1. 在mini-webpack 执行过程中，在各个生命周期使用tapable 触发事件，  pluginInit 初始化plugin，将事件和上下文传递给plugin, 使得插件能做到一些变更

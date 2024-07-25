@@ -6,6 +6,8 @@ import traverse from "@babel/traverse";
 import ejs from "ejs";
 import babel from "@babel/core";
 import { jsonLoader } from "./loader/json-loader.js";
+import ChangeOutputPlugin from "./plugins/change-output.js";
+import { SyncHook } from "tapable";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,8 +25,19 @@ const webpackConfig = {
       },
     ],
   },
+  plugins: [new ChangeOutputPlugin()],
 };
 
+const hooks = {
+  emitFile: new SyncHook(['context']),
+};
+
+function initPlugin() {
+  webpackConfig.plugins.forEach((plugin) => {
+    plugin.apply(hooks);
+  });
+}
+initPlugin();
 function createAssets(filePath) {
   // 1.获取文件内容
   let source = fs.readFileSync(path.join(__dirname, filePath), "utf8");
@@ -113,7 +126,15 @@ function build(graph) {
   const code = ejs.render(template, {
     data,
   });
-  fs.writeFileSync("./bundle.js", code);
+  //  调用事件，传给插件，并携带上下文
+  let outputPath = "./bundle.js";
+  const context = {
+    changeOutputPath(path) {
+      outputPath = path;
+    },
+  };
+  hooks.emitFile.call(context);
+  fs.writeFileSync(outputPath, code);
 }
 
 build(graph);
